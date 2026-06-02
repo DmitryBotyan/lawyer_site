@@ -1,26 +1,222 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+
+  --font-sans: var(--font-manrope);
+  --font-serif: var(--font-playfair);
+  --font-stat: var(--font-cormorant);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.375rem;
+
+  --gold: oklch(0.78 0.10 84);
+
+  --background: oklch(0.10 0.005 80);
+  --foreground: oklch(0.93 0.005 85);
+
+  --card: oklch(0.13 0.005 80);
+  --card-foreground: oklch(0.93 0.005 85);
+
+  --popover: oklch(0.13 0.005 80);
+  --popover-foreground: oklch(0.93 0.005 85);
+
+  --primary: oklch(0.78 0.10 84);
+  --primary-foreground: oklch(0.12 0.01 80);
+
+  --secondary: oklch(0.17 0.005 80);
+  --secondary-foreground: oklch(0.93 0.005 85);
+
+  --muted: oklch(0.17 0.005 80);
+  --muted-foreground: oklch(0.58 0.008 80);
+
+  --accent: oklch(0.17 0.005 80);
+  --accent-foreground: oklch(0.93 0.005 85);
+
+  --destructive: oklch(0.60 0.20 25);
+
+  --border: oklch(0.22 0.005 80);
+  --input: oklch(0.22 0.005 80);
+  --ring: oklch(0.78 0.10 84 / 40%);
+}
+
+.dark {
+  --gold: oklch(0.78 0.10 84);
+  --background: oklch(0.10 0.005 80);
+  --foreground: oklch(0.93 0.005 85);
+  --card: oklch(0.13 0.005 80);
+  --card-foreground: oklch(0.93 0.005 85);
+  --popover: oklch(0.13 0.005 80);
+  --popover-foreground: oklch(0.93 0.005 85);
+  --primary: oklch(0.78 0.10 84);
+  --primary-foreground: oklch(0.12 0.01 80);
+  --secondary: oklch(0.17 0.005 80);
+  --secondary-foreground: oklch(0.93 0.005 85);
+  --muted: oklch(0.17 0.005 80);
+  --muted-foreground: oklch(0.58 0.008 80);
+  --accent: oklch(0.17 0.005 80);
+  --accent-foreground: oklch(0.93 0.005 85);
+  --destructive: oklch(0.60 0.20 25);
+  --border: oklch(0.22 0.005 80);
+  --input: oklch(0.22 0.005 80);
+  --ring: oklch(0.78 0.10 84 / 40%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  ::selection {
+    background: oklch(0.78 0.10 84 / 30%);
+    color: var(--foreground);
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--background); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 9999px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Gold fade divider — replaces plain border-b on sections */
+  section.border-b {
+    border-bottom: none;
+    position: relative;
+  }
+  section.border-b::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      oklch(0.78 0.10 84 / 0.4) 30%,
+      oklch(0.78 0.10 84 / 0.4) 70%,
+      transparent 100%
+    );
+  }
+
+  /* Card lift on hover */
+  .card-lift {
+    cursor: pointer;
+    position: relative;
+    will-change: transform;
+    transition:
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px -10px oklch(0.78 0.10 84 / 0.15);
+    z-index: 2;
+  }
+
+  /* Number font — Cormorant Garamond, applied to all stat/numeric display elements */
+  .font-num {
+    font-family: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+  }
+
+  /* Gold colour utilities — used across pages */
+  .text-gold            { color: var(--gold); }
+  .text-gold-gradient   { color: var(--gold); }
+  .bg-gold              { background-color: var(--gold); }
+  .fill-gold            { fill: var(--gold); }
+  .border-gold          { border-color: var(--gold); }
+
+  /* Opacity variants used with Tailwind slash syntax (bg-gold/5 etc.)
+     Tailwind resolves these via --color-gold token set in @theme inline  */
+
+  /* card-gold: minimal border card, hover lifts border to gold */
+  .card-gold {
+    border: 1px solid var(--border);
+    transition: border-color 0.2s ease;
+  }
+  .card-gold:hover { border-color: oklch(from var(--gold) l c h / 40%); }
+
+  /* glow-gold: removed in minimal redesign — no-op to avoid errors */
+  .glow-gold {}
+
+  /* hover utilities */
+  .hover\:text-gold:hover   { color: var(--gold); }
+  .hover\:border-gold\/50:hover { border-color: oklch(from var(--gold) l c h / 50%); }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-fade-up { animation: none; }
+}
+
+/* Cursor rules — outside @layer to override Tailwind preflight */
+a,
+button,
+[role="button"],
+[role="link"],
+[role="tab"],
+[role="menuitem"],
+[role="option"],
+[role="checkbox"],
+[role="radio"],
+[role="switch"],
+label[for],
+select,
+summary {
+  cursor: pointer;
+}
+
+[disabled],
+[aria-disabled="true"],
+button:disabled {
+  cursor: not-allowed;
 }
